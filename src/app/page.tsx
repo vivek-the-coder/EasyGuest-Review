@@ -23,29 +23,23 @@ export default function Home() {
 
   const openGoogleReview = () => {
     const placeId = 'ChIJHxiDNywHYDkRggbFBozdlSw';
-    // Web URL that opens the write-a-review form directly
-    const reviewWebUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
-    // App Link that Android intercepts and opens as the place page in the Maps app
-    const androidMapsUrl = `https://maps.google.com/maps?q=place_id:${placeId}`;
 
-    const ua = navigator.userAgent.toLowerCase();
-    const isAndroid = /android/.test(ua);
-    const isIOS = /iphone|ipad|ipod/.test(ua);
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+    let mapsUrl = '';
 
     if (isAndroid) {
-      // Android App Links: Google has registered maps.google.com as a Verified App Link.
-      // Android OS intercepts this URL and opens it inside the Google Maps app directly
-      // on the hotel's place page — then user can tap "Write a review" (1 tap away).
-      window.location.href = androidMapsUrl;
-    } else if (isIOS) {
-      // iOS: comgooglemaps:// doesn't support a direct "write review" deep link.
-      // The web URL is the most reliable way to land on the review form on iOS.
-      // If Google Maps app is installed, iOS may offer to open it; otherwise web handles it.
-      window.location.href = reviewWebUrl;
+      // query_place_id tells Android Maps app to resolve the ID as a direct place lookup
+      // NOT a text search — this is why plain q= or comgooglemaps://?q= were showing raw IDs
+      mapsUrl = `https://www.google.com/maps/search/?api=1&query=Hotel+Sai+Darshan&query_place_id=${placeId}`;
     } else {
-      // Desktop: open review page in new tab
-      window.open(reviewWebUrl, '_blank');
+      // iOS + Desktop: use the direct write-review web URL
+      mapsUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
     }
+
+    window.location.href = mapsUrl;
   };
 
   const copyAndOpenReview = async () => {
