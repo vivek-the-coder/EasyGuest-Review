@@ -22,8 +22,9 @@ export default function Home() {
   const { toasts, removeToast, success, error } = useToast();
 
   const openGoogleReview = () => {
-    // The most direct link for mobile apps and browser
-    window.open('https://g.page/r/CYIGxQaM3ZUsEBM/review', '_blank');
+    // Use location.href so the mobile OS intercepts the URL and opens
+    // the Google Maps app directly (instead of a new browser tab)
+    window.location.href = 'https://g.page/r/CYIGxQaM3ZUsEBM/review';
   };
 
   const copyAndOpenReview = async () => {
