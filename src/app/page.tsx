@@ -22,9 +22,27 @@ export default function Home() {
   const { toasts, removeToast, success, error } = useToast();
 
   const openGoogleReview = () => {
-    // Use location.href so the mobile OS intercepts the URL and opens
-    // the Google Maps app directly (instead of a new browser tab)
-    window.location.href = 'https://g.page/r/CYIGxQaM3ZUsEBM/review';
+    const placeId = 'ChIJHxiDNywHYDkRggbFBozdlSw';
+    const webUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+
+    const ua = navigator.userAgent.toLowerCase();
+    const isAndroid = /android/.test(ua);
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+
+    if (isAndroid) {
+      // Android: use intent:// URI — OS routes this to Google Maps app
+      // S.browser_fallback_url is used if the app isn't installed
+      window.location.href = `intent://maps.google.com/maps?q=place_id:${placeId}#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`;
+    } else if (isIOS) {
+      // iOS: try the comgooglemaps:// scheme first; fall back to web after 500ms
+      window.location.href = `comgooglemaps://?q=place_id:${placeId}`;
+      setTimeout(() => {
+        window.location.href = webUrl;
+      }, 500);
+    } else {
+      // Desktop: just open the web URL
+      window.open(webUrl, '_blank');
+    }
   };
 
   const copyAndOpenReview = async () => {
