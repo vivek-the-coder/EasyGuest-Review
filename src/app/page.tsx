@@ -1,6 +1,18 @@
 'use client';
 
-import { Copy, ExternalLink, MapPin, Phone, Clock, Sparkles, RefreshCw, Check, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import Image from 'next/image';
+import { 
+  Copy, 
+  ExternalLink, 
+  MapPin, 
+  Phone, 
+  Clock, 
+  Sparkles, 
+  RefreshCw, 
+  Check, 
+  AlertCircle
+} from 'lucide-react';
 import SchemaData from '@/components/SchemaData';
 import { useReviewGenerator } from '@/hooks/useReviewGenerator';
 import { ToastContainer, useToast } from '@/components/Toast';
@@ -10,6 +22,7 @@ export default function Home() {
   const { toasts, removeToast, success, error } = useToast();
 
   const openGoogleReview = () => {
+    // The most direct link for mobile apps and browser
     window.open('https://g.page/r/CYIGxQaM3ZUsEBM/review', '_blank');
   };
 
@@ -17,201 +30,232 @@ export default function Home() {
     if (!state.review) return;
     
     try {
-      // Copy to clipboard using the hook function
       await copyToClipboard();
-      success('Review copied! Opening Google review page...');
+      success('Review copied! Opening Google Maps...');
       
-      // Open Google review page after a short delay
+      // Delay to allow user to see the success message before transition
       setTimeout(() => {
         openGoogleReview();
-      }, 800);
+      }, 1000);
     } catch (err) {
       error('Failed to copy to clipboard');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-[#050a18] text-gold-50 selection:bg-gold-500/30 selection:text-gold-100 font-sans">
       <SchemaData />
       
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">SD</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Hotel Sai Darshan</h1>
-                <p className="text-sm text-gray-600">Rajpipla, Gujarat</p>
-              </div>
+      {/* Background Decorative Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold-600/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/5 blur-[120px] rounded-full" />
+      </div>
+
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      {/* Navigation / Header */}
+      <nav className="relative z-50 border-b border-white/5 bg-navy-950/50 backdrop-blur-xl sticky top-0">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gold-400/30 p-0.5 bg-white shadow-[0_0_20px_rgba(175,138,79,0.2)]">
+              <Image 
+                src="/logo.jpg" 
+                alt="Hotel Sai Darshan Logo" 
+                fill 
+                className="object-contain"
+              />
             </div>
-            <div className="flex items-center gap-2 bg-yellow-50 px-3 py-1.5 rounded-full">
-              <div className="flex text-yellow-500">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-sm font-semibold text-yellow-700">4.8</span>
+            <div>
+              <h1 className="text-xl font-serif font-bold tracking-tight text-white">
+                Sai Darshan
+              </h1>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-gold-400 font-semibold">
+                Luxury & Comfort
+              </p>
             </div>
           </div>
+          
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
+            <span className="flex items-center gap-1.5 text-gold-400 bg-gold-400/5 px-3 py-1 rounded-full border border-gold-400/10">
+              <Sparkles className="w-3.5 h-3.5 fill-gold-400" />
+              4.8 Rated Experience
+            </span>
+          </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <main className="relative z-10 max-w-4xl mx-auto px-6 pt-12 pb-24 grid-reorder gap-y-12 md:gap-y-20">
         
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            Share Your Experience
+        <section className="area-hero text-center animate-in fade-in slide-in-from-top-4 duration-1000">
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full mb-8 backdrop-blur-md">
+            <Sparkles className="w-4 h-4 text-gold-400" />
+            <span className="text-xs font-bold tracking-widest uppercase text-gold-200">AI-Powered Experience Assistant</span>
+          </div>
+          
+          <h2 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+            Immortalize Your <span className="text-gold-400 italic">Stay</span>
           </h2>
-          <p className="text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
-            Generate authentic, SEO-optimized reviews for Hotel Sai Darshan in seconds
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10">
+            Let our AI capture the essence of your visit at Hotel Sai Darshan. 
+            Generate a personalized review in seconds and share the magic with other travelers.
           </p>
-          
-          {/* Features */}
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
-            <div className="flex items-center gap-1.5 bg-white/60 px-4 py-2 rounded-full backdrop-blur-sm">
-              <MapPin className="w-4 h-4 text-blue-600" />
-              <span>Opp. Harshiddhi Mata Temple</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/60 px-4 py-2 rounded-full backdrop-blur-sm">
-              <Phone className="w-4 h-4 text-blue-600" />
-              <span>24/7 Support</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/60 px-4 py-2 rounded-full backdrop-blur-sm">
-              <Clock className="w-4 h-4 text-blue-600" />
-              <span>Quick Check-in</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Card Container */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6">
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-6 h-6 text-white" />
-              <h3 className="text-xl font-bold text-white">AI Review Generator</h3>
-            </div>
-          </div>
-          
-          <div className="p-8">
-            {state.error && (
-              <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <p className="text-red-700 text-sm">{state.error}</p>
+          {/* Quick Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto text-sm">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-sm">
+              <MapPin className="w-5 h-5 text-gold-400" />
+              <div className="text-left">
+                <p className="text-white font-semibold">Rajpipla</p>
+                <p className="text-xs text-gray-500">Opp. Harshiddhimata Temple</p>
               </div>
-            )}
+            </div>
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-sm">
+              <Check className="w-5 h-5 text-gold-400" />
+              <div className="text-left">
+                <p className="text-white font-semibold">Premium Service</p>
+                <p className="text-xs text-gray-500">Verified Guest Reviews</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-sm">
+              <Clock className="w-5 h-5 text-gold-400" />
+              <div className="text-left">
+                <p className="text-white font-semibold">Instant Result</p>
+                <p className="text-xs text-gray-500">Less than 5 seconds</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            {!state.review ? (
-              <div className="text-center py-8">
-                <div className="mb-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl mx-auto mb-6 flex items-center justify-center">
-                    <Sparkles className="w-10 h-10 text-blue-600" />
+        {/* Action Card */}
+        <div className="area-card relative group">
+          {/* Card Border Background Mask */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-gold-600/50 to-blue-600/30 rounded-[32px] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+          
+          <div className="relative bg-[#0d152b] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl transition-all duration-300">
+            {/* Header Pattern */}
+            <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+            
+            <div className="p-8 md:p-12">
+              {!state.review ? (
+                <div className="text-center py-6">
+                  <div className="w-24 h-24 bg-gold-400/10 rounded-3xl mx-auto mb-8 flex items-center justify-center border border-gold-400/20 group-hover:scale-110 transition-transform duration-500">
+                    <Sparkles className="w-10 h-10 text-gold-400 animate-pulse" />
                   </div>
-                  <h4 className="text-2xl font-bold text-gray-900 mb-3">
-                    Generate a Review in 10 Seconds
-                  </h4>
-                  <p className="text-gray-600 max-w-md mx-auto">
-                    Our AI creates unique, human-like reviews that help other travelers discover Hotel Sai Darshan
-                  </p>
-                </div>
-                
-                <button
-                  onClick={generateReview}
-                  disabled={state.loading}
-                  className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 px-8 rounded-xl font-semibold text-lg hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  {state.loading ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
-                      <span>Generate Review</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            ) : (
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="mb-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <Check className="w-5 h-5 text-green-600" />
-                    Your Review is Ready
-                  </h4>
                   
-                  <div className="bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-2xl p-6 relative">
-                    <p className="text-gray-800 text-lg leading-relaxed whitespace-pre-wrap">
-                      {state.review}
-                    </p>
-                    
-                    {/* Word count */}
-                    <div className="absolute bottom-2 right-3 text-xs text-gray-400">
-                      {state.review.split(/\s+/).filter(w => w.length > 0).length} words
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="mb-4">
+                  <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4">
+                    Ready to share your story?
+                  </h3>
+                  <p className="text-gray-400 mb-10 max-w-sm mx-auto">
+                    Click below to generate a unique, professional review based on our premium hospitality standards.
+                  </p>
+                  
                   <button
-                    onClick={copyAndOpenReview}
-                    className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 ${
-                      state.copied 
-                        ? 'bg-green-100 text-green-700 border-2 border-green-300' 
-                        : 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white hover:shadow-lg hover:scale-[1.02]'
-                    }`}
+                    onClick={generateReview}
+                    disabled={state.loading}
+                    className="group relative w-full md:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-gold-500 to-gold-700 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-[0_0_30px_rgba(175,138,79,0.4)] hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {state.copied ? (
+                    {state.loading ? (
                       <>
-                        <Check className="w-5 h-5" />
-                        <span>Copied! Opening Google...</span>
+                        <RefreshCw className="w-6 h-6 animate-spin" />
+                        <span>Curating Excellence...</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-5 h-5" />
-                        <ExternalLink className="w-4 h-4" />
-                        <span>Copy & Post Review</span>
+                        <Sparkles className="w-6 h-6" />
+                        <span>Generate Review</span>
+                        <ExternalLink className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </button>
+                </div>
+              ) : (
+                <div className="animate-in fade-in zoom-in-95 duration-500">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20">
+                        <Check className="w-5 h-5 text-green-500" />
+                      </div>
+                      <h4 className="text-xl font-serif font-bold text-white leading-none">Perfectly Crafted</h4>
+                    </div>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-gray-500 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                      {state.review.split(/\s+/).filter(w => w.length > 0).length} Words
+                    </span>
+                  </div>
                   
-                  <p className="text-center text-sm text-gray-500 mt-3">
-                    Click to copy and open Google review page
+                  <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 mb-10">
+                    <div className="absolute top-0 right-0 p-4 opacity-5">
+                      <Sparkles className="w-12 h-12 text-gold-400" />
+                    </div>
+                    <p className="text-gray-200 text-lg md:text-xl leading-relaxed font-light italic">
+                      "{state.review}"
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      onClick={copyAndOpenReview}
+                      className="group flex items-center justify-center gap-3 bg-white text-navy-950 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-gold-50 transition-all duration-300 hover:shadow-xl active:scale-95"
+                    >
+                      <Copy className="w-5 h-5" />
+                      <span>Copy & Post to Maps</span>
+                    </button>
+                    
+                    <button
+                      onClick={generateReview}
+                      disabled={state.loading}
+                      className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white px-8 py-5 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all duration-300 active:scale-95"
+                    >
+                      <RefreshCw className={`w-5 h-5 ${state.loading ? 'animate-spin' : ''}`} />
+                      <span>Try Different Style</span>
+                    </button>
+                  </div>
+                  
+                  <p className="text-center text-xs text-gray-500 mt-6 flex items-center justify-center gap-2">
+                    <Check className="w-3.5 h-3.5" />
+                    Securely copied to your clipboard. Redirecting to Google Maps...
                   </p>
                 </div>
-
-                <button
-                  onClick={generateReview}
-                  disabled={state.loading}
-                  className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 disabled:opacity-50"
-                >
-                  <RefreshCw className={`w-5 h-5 ${state.loading ? 'animate-spin' : ''}`} />
-                  <span>{state.loading ? 'Generating...' : 'Generate Another Review'}</span>
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Footer Info */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-gray-500">
-            Generate authentic reviews to help others discover Hotel Sai Darshan
+        {/* Luxury Experience Features */}
+        <section className="mt-24">
+          <h3 className="text-2xl font-serif font-bold text-white text-center mb-12">The Sai Darshan Promise</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <Feature icon={<Sparkles className="w-6 h-6" />} label="5-Star Comfort" />
+            <Feature icon={<MapPin className="w-6 h-6" />} label="Prime Location" />
+            <Feature icon={<Phone className="w-6 h-6" />} label="24/7 Concierge" />
+            <Feature icon={<Sparkles className="w-6 h-6" />} label="Daily Hygiene" />
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-32 pt-12 border-t border-white/10 text-center">
+          <p className="text-sm text-gray-400">
+            © {new Date().getFullYear()} Hotel Sai Darshan, Rajpipla. All rights reserved.
           </p>
-          <p className="text-xs text-gray-400 mt-2">
-            Located at Opp. Harshiddhimataji Temple, Rajpipla, Gujarat
+          <p className="text-[10px] text-gray-600 mt-4 uppercase tracking-widest">
+            A Premium Hospitality Experience near Harshiddhimataji Temple
           </p>
-        </div>
+        </footer>
       </main>
+    </div>
+  );
+}
+
+function Feature({ icon, label }: { icon: React.ReactNode, label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-4 group">
+      <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gold-400 group-hover:bg-gold-400 group-hover:text-navy-950 transition-all duration-500">
+        {icon}
+      </div>
+      <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-gold-400 transition-colors">
+        {label}
+      </span>
     </div>
   );
 }

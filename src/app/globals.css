@@ -8,19 +8,57 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui;
+  --font-serif: var(--font-playfair), ui-serif, Georgia;
+  
+  /* Luxury Palette */
+  --color-gold-50: #fbfaf7;
+  --color-gold-100: #f7f2e9;
+  --color-gold-200: #ece1c9;
+  --color-gold-300: #decba1;
+  --color-gold-400: #c9a66b;
+  --color-gold-500: #af8a4f;
+  --color-gold-600: #96703f;
+  --color-gold-700: #7d5935;
+  --color-gold-800: #66482e;
+  --color-gold-900: #543c29;
+  
+  --color-navy-900: #0a1128;
+  --color-navy-950: #050a18;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #fbfaf7;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.grid-reorder {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: 
+    "card"
+    "hero";
+}
+
+@media (min-width: 768px) {
+  .grid-reorder {
+    grid-template-areas: 
+      "hero"
+      "card";
+  }
+}
+
+.area-hero { grid-area: hero; }
+.area-card { grid-area: card; }
