@@ -23,23 +23,24 @@ export default function Home() {
 
   const openGoogleReview = () => {
     const placeId = 'ChIJHxiDNywHYDkRggbFBozdlSw';
+    // Full writereview URL — opens review dialog when handled correctly
+    const reviewWebUrl = `https://search.google.com/local/writereview?placeid=${placeId}&source=g.page.m.ia._&laa=nmx-review-solicitation-ia2`;
 
     const ua = navigator.userAgent;
     const isAndroid = /Android/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
-
-    let mapsUrl = '';
 
     if (isAndroid) {
-      // query_place_id tells Android Maps app to resolve the ID as a direct place lookup
-      // NOT a text search — this is why plain q= or comgooglemaps://?q= were showing raw IDs
-      mapsUrl = `https://www.google.com/maps/search/?api=1&query=Hotel+Sai+Darshan&query_place_id=${placeId}`;
+      // intent:// forces this URL to be opened by the Maps app (com.google.android.apps.maps)
+      // The Maps app DOES handle search.google.com/local/writereview URLs natively
+      // and opens the review star-rating screen — not just the business profile.
+      // S.browser_fallback_url is used gracefully if Maps is not installed.
+      const encodedFallback = encodeURIComponent(reviewWebUrl);
+      const intentUrl = `intent://search.google.com/local/writereview?placeid=${placeId}&source=g.page.m.ia._&laa=nmx-review-solicitation-ia2#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=${encodedFallback};end`;
+      window.location.href = intentUrl;
     } else {
-      // iOS + Desktop: use the direct write-review web URL
-      mapsUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+      // iOS + Desktop: web URL opens the review form reliably
+      window.location.href = reviewWebUrl;
     }
-
-    window.location.href = mapsUrl;
   };
 
   const copyAndOpenReview = async () => {
