@@ -23,25 +23,28 @@ export default function Home() {
 
   const openGoogleReview = () => {
     const placeId = 'ChIJHxiDNywHYDkRggbFBozdlSw';
-    const webUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+    // Web URL that opens the write-a-review form directly
+    const reviewWebUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+    // App Link that Android intercepts and opens as the place page in the Maps app
+    const androidMapsUrl = `https://maps.google.com/maps?q=place_id:${placeId}`;
 
     const ua = navigator.userAgent.toLowerCase();
     const isAndroid = /android/.test(ua);
     const isIOS = /iphone|ipad|ipod/.test(ua);
 
     if (isAndroid) {
-      // Android: use intent:// URI — OS routes this to Google Maps app
-      // S.browser_fallback_url is used if the app isn't installed
-      window.location.href = `intent://maps.google.com/maps?q=place_id:${placeId}#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`;
+      // Android App Links: Google has registered maps.google.com as a Verified App Link.
+      // Android OS intercepts this URL and opens it inside the Google Maps app directly
+      // on the hotel's place page — then user can tap "Write a review" (1 tap away).
+      window.location.href = androidMapsUrl;
     } else if (isIOS) {
-      // iOS: try the comgooglemaps:// scheme first; fall back to web after 500ms
-      window.location.href = `comgooglemaps://?q=place_id:${placeId}`;
-      setTimeout(() => {
-        window.location.href = webUrl;
-      }, 500);
+      // iOS: comgooglemaps:// doesn't support a direct "write review" deep link.
+      // The web URL is the most reliable way to land on the review form on iOS.
+      // If Google Maps app is installed, iOS may offer to open it; otherwise web handles it.
+      window.location.href = reviewWebUrl;
     } else {
-      // Desktop: just open the web URL
-      window.open(webUrl, '_blank');
+      // Desktop: open review page in new tab
+      window.open(reviewWebUrl, '_blank');
     }
   };
 
