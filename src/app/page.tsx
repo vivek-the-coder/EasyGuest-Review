@@ -1,17 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
-import { 
-  Copy, 
-  ExternalLink, 
-  MapPin, 
-  Phone, 
-  Clock, 
-  Sparkles, 
-  RefreshCw, 
-  Check, 
-  AlertCircle
+import {
+  Copy,
+  ExternalLink,
+  MapPin,
+  Phone,
+  Clock,
+  Sparkles,
+  RefreshCw,
+  Check,
 } from 'lucide-react';
 import SchemaData from '@/components/SchemaData';
 import { useReviewGenerator } from '@/hooks/useReviewGenerator';
@@ -23,38 +21,25 @@ export default function Home() {
 
   const openGoogleReview = () => {
     const placeId = 'ChIJHxiDNywHYDkRggbFBozdlSw';
-    // Full writereview URL — opens review dialog when handled correctly
+    // Use Google's writereview page directly. Sending this through an Android
+    // Maps intent can make some devices treat the place ID as plain search text.
     const reviewWebUrl = `https://search.google.com/local/writereview?placeid=${placeId}&source=g.page.m.ia._&laa=nmx-review-solicitation-ia2`;
 
-    const ua = navigator.userAgent;
-    const isAndroid = /Android/i.test(ua);
-
-    if (isAndroid) {
-      // intent:// forces this URL to be opened by the Maps app (com.google.android.apps.maps)
-      // The Maps app DOES handle search.google.com/local/writereview URLs natively
-      // and opens the review star-rating screen — not just the business profile.
-      // S.browser_fallback_url is used gracefully if Maps is not installed.
-      const encodedFallback = encodeURIComponent(reviewWebUrl);
-      const intentUrl = `intent://search.google.com/local/writereview?placeid=${placeId}&source=g.page.m.ia._&laa=nmx-review-solicitation-ia2#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=${encodedFallback};end`;
-      window.location.href = intentUrl;
-    } else {
-      // iOS + Desktop: web URL opens the review form reliably
-      window.location.href = reviewWebUrl;
-    }
+    window.location.href = reviewWebUrl;
   };
 
   const copyAndOpenReview = async () => {
     if (!state.review) return;
-    
+
     try {
       await copyToClipboard();
       success('Review copied! Opening Google Maps...');
-      
+
       // Delay to allow user to see the success message before transition
       setTimeout(() => {
         openGoogleReview();
       }, 1000);
-    } catch (err) {
+    } catch {
       error('Failed to copy to clipboard');
     }
   };
@@ -62,7 +47,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#050a18] text-gold-50 selection:bg-gold-500/30 selection:text-gold-100 font-sans">
       <SchemaData />
-      
+
       {/* Background Decorative Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold-600/10 blur-[120px] rounded-full" />
@@ -76,10 +61,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gold-400/30 p-0.5 bg-white shadow-[0_0_20px_rgba(175,138,79,0.2)]">
-              <Image 
-                src="/logo.jpg" 
-                alt="Hotel Sai Darshan Logo" 
-                fill 
+              <Image
+                src="/logo.jpg"
+                alt="Hotel Sai Darshan Logo"
+                fill
                 className="object-contain"
               />
             </div>
@@ -92,7 +77,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
             <span className="flex items-center gap-1.5 text-gold-400 bg-gold-400/5 px-3 py-1 rounded-full border border-gold-400/10">
               <Sparkles className="w-3.5 h-3.5 fill-gold-400" />
@@ -103,20 +88,22 @@ export default function Home() {
       </nav>
 
       <main className="relative z-10 max-w-4xl mx-auto px-6 pt-12 pb-24 grid-reorder gap-y-12 md:gap-y-20">
-        
         {/* Hero Section */}
         <section className="area-hero text-center animate-in fade-in slide-in-from-top-4 duration-1000">
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full mb-8 backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-gold-400" />
-            <span className="text-xs font-bold tracking-widest uppercase text-gold-200">AI-Powered Experience Assistant</span>
+            <span className="text-xs font-bold tracking-widest uppercase text-gold-200">
+              AI-Powered Experience Assistant
+            </span>
           </div>
-          
+
           <h2 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
             Immortalize Your <span className="text-gold-400 italic">Stay</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10">
-            Let our AI capture the essence of your visit at Hotel Sai Darshan. 
-            Generate a personalized review in seconds and share the magic with other travelers.
+            Let our AI capture the essence of your visit at Hotel Sai Darshan.
+            Generate a personalized review in seconds and share the magic with
+            other travelers.
           </p>
 
           {/* Quick Info Grid */}
@@ -125,7 +112,9 @@ export default function Home() {
               <MapPin className="w-5 h-5 text-gold-400" />
               <div className="text-left">
                 <p className="text-white font-semibold">Rajpipla</p>
-                <p className="text-xs text-gray-500">Opp. Harshiddhimata Temple</p>
+                <p className="text-xs text-gray-500">
+                  Opp. Harshiddhimata Temple
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-sm">
@@ -149,25 +138,26 @@ export default function Home() {
         <div className="area-card relative group">
           {/* Card Border Background Mask */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-gold-600/50 to-blue-600/30 rounded-[32px] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-          
+
           <div className="relative bg-[#0d152b] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl transition-all duration-300">
             {/* Header Pattern */}
             <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-            
+
             <div className="p-8 md:p-12">
               {!state.review ? (
                 <div className="text-center py-6">
                   <div className="w-24 h-24 bg-gold-400/10 rounded-3xl mx-auto mb-8 flex items-center justify-center border border-gold-400/20 group-hover:scale-110 transition-transform duration-500">
                     <Sparkles className="w-10 h-10 text-gold-400 animate-pulse" />
                   </div>
-                  
+
                   <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4">
                     Ready to share your story?
                   </h3>
                   <p className="text-gray-400 mb-10 max-w-sm mx-auto">
-                    Click below to generate a unique, professional review based on our premium hospitality standards.
+                    Click below to generate a unique, professional review based
+                    on our premium hospitality standards.
                   </p>
-                  
+
                   <button
                     onClick={generateReview}
                     disabled={state.loading}
@@ -194,19 +184,26 @@ export default function Home() {
                       <div className="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20">
                         <Check className="w-5 h-5 text-green-500" />
                       </div>
-                      <h4 className="text-xl font-serif font-bold text-white leading-none">Perfectly Crafted</h4>
+                      <h4 className="text-xl font-serif font-bold text-white leading-none">
+                        Perfectly Crafted
+                      </h4>
                     </div>
                     <span className="text-[10px] font-bold tracking-widest uppercase text-gray-500 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                      {state.review.split(/\s+/).filter(w => w.length > 0).length} Words
+                      {
+                        state.review
+                          .split(/\s+/)
+                          .filter((w) => w.length > 0).length
+                      }{' '}
+                      Words
                     </span>
                   </div>
-                  
+
                   <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 mb-10">
                     <div className="absolute top-0 right-0 p-4 opacity-5">
                       <Sparkles className="w-12 h-12 text-gold-400" />
                     </div>
                     <p className="text-gray-200 text-lg md:text-xl leading-relaxed font-light italic">
-                      "{state.review}"
+                      &quot;{state.review}&quot;
                     </p>
                   </div>
 
@@ -218,20 +215,23 @@ export default function Home() {
                       <Copy className="w-5 h-5" />
                       <span>Copy & Post to Maps</span>
                     </button>
-                    
+
                     <button
                       onClick={generateReview}
                       disabled={state.loading}
                       className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white px-8 py-5 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all duration-300 active:scale-95"
                     >
-                      <RefreshCw className={`w-5 h-5 ${state.loading ? 'animate-spin' : ''}`} />
+                      <RefreshCw
+                        className={`w-5 h-5 ${state.loading ? 'animate-spin' : ''}`}
+                      />
                       <span>Try Different Style</span>
                     </button>
                   </div>
-                  
+
                   <p className="text-center text-xs text-gray-500 mt-6 flex items-center justify-center gap-2">
                     <Check className="w-3.5 h-3.5" />
-                    Securely copied to your clipboard. Redirecting to Google Maps...
+                    Securely copied to your clipboard. Redirecting to Google
+                    Maps...
                   </p>
                 </div>
               )}
@@ -241,7 +241,9 @@ export default function Home() {
 
         {/* Luxury Experience Features */}
         <section className="mt-24">
-          <h3 className="text-2xl font-serif font-bold text-white text-center mb-12">The Sai Darshan Promise</h3>
+          <h3 className="text-2xl font-serif font-bold text-white text-center mb-12">
+            The Sai Darshan Promise
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <Feature icon={<Sparkles className="w-6 h-6" />} label="5-Star Comfort" />
             <Feature icon={<MapPin className="w-6 h-6" />} label="Prime Location" />
@@ -253,7 +255,8 @@ export default function Home() {
         {/* Footer */}
         <footer className="mt-32 pt-12 border-t border-white/10 text-center">
           <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} Hotel Sai Darshan, Rajpipla. All rights reserved.
+            © {new Date().getFullYear()} Hotel Sai Darshan, Rajpipla. All rights
+            reserved.
           </p>
           <p className="text-[10px] text-gray-600 mt-4 uppercase tracking-widest">
             A Premium Hospitality Experience near Harshiddhimataji Temple
@@ -264,7 +267,7 @@ export default function Home() {
   );
 }
 
-function Feature({ icon, label }: { icon: React.ReactNode, label: string }) {
+function Feature({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <div className="flex flex-col items-center gap-4 group">
       <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gold-400 group-hover:bg-gold-400 group-hover:text-navy-950 transition-all duration-500">
